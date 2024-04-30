@@ -10,7 +10,7 @@ const register = async (req, res) => {
     throw new BadRequest("User with that email already exists");
   }
   if (!email || !password || !name) {
-    throw new BadRequest("Please provide email and password");
+    throw new BadRequest("Please provide email and password and name");
   }
   const user = await User.create({ email, password, name });
   const token = user.createJWT();
@@ -45,5 +45,5 @@ const login = async (req, res) => {
 
 module.exports = {
   register,
-    login,
+  login,
 };
