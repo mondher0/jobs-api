@@ -1,6 +1,7 @@
 const BadRequest = require("../errors/bad-request");
 const { StatusCodes } = require("http-status-codes");
 const Job = require("../models/Job");
+const User = require("../models/User");
 
 // create job
 const createJob = async (req, res) => {
@@ -68,10 +69,26 @@ const deleteJob = async (req, res) => {
     .json({ success: true, message: "Job deleted successfully" });
 };
 
+// get all users with their jobs
+const getAllUsersWithJobs = async (req, res) => {
+  const users = await User.aggregate([
+    {
+      $lookup: {
+        from: "jobs", // the collection to join
+        localField: "_id", // field in the users collection
+        foreignField: "user", // field in the jobs collection
+        as: "jobs", // output array field
+      },
+    },
+  ]);
+  res.status(StatusCodes.OK).json({ success: true, users });
+};
+
 module.exports = {
   createJob,
   getAllJobs,
   getJob,
   updateJob,
   deleteJob,
+  getAllUsersWithJobs,
 };
